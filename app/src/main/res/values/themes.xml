@@ -2,6 +2,7 @@
 <resources>
 
     <style name="Theme.TestAssignment" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">@color/purple_700</item>
+        <item name="android:statusBarColor">@color/gradiant_start</item>
+        <item name="android:navigationBarColor">@color/gradiant_end</item>
     </style>
 </resources>
