@@ -1,28 +1,26 @@
 package com.example.testassignment
 
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.OvalShape
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsDraggedAsState
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
+import androidx.compose.material.Slider
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
@@ -44,7 +42,7 @@ class MainActivity : ComponentActivity() {
                     ),
                     contentAlignment = Alignment.Center
                 ) {
-                    CustomSlider()
+                    ComposeSlider()
                 }
             }
         }
@@ -52,7 +50,18 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun CustomSlider() {
+fun ComposeSlider() {
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.toFloat()
+
+    val sliderPosition = remember { mutableStateOf(0f) }
+    val thumbOffSetX = remember { mutableStateOf(-(screenWidth * 1.05))}
+    val currentNumber = remember { mutableStateOf(1) }
+
+    val interactionSource = remember { MutableInteractionSource() }
+    val sliderDragged by interactionSource.collectIsDraggedAsState()
+    val sliderPressed by interactionSource.collectIsPressedAsState()
+
     Box(
         modifier = Modifier
             .background(
@@ -64,37 +73,87 @@ fun CustomSlider() {
             .clip(CircleShape),
         contentAlignment = Alignment.Center
     ) {
-
-        VerticalLines(numbers = listOf("1","2","3","4","5","6","7","8"))
-        Thumb(color = Color.Red)
+        Row {
+            for (i in 1..8) {
+                CustomText(text = i.toString())
+            }
+        }
     }
-}
 
-@Composable
-fun Thumb(color: Color) {
-    val offSetX = remember { mutableStateOf(0f)}
+    val thumbOffSetXCalculation = ((((sliderPosition.value-1) * 115) - (screenWidth * 1.05)))
+
+    Slider(
+        value = sliderPosition.value,
+        valueRange = 1f..8f,
+        steps = 6,
+        modifier = Modifier
+            .padding(start = 40.dp, end = 40.dp)
+        ,
+        onValueChange = {
+            sliderPosition.value = it
+            thumbOffSetX.value = thumbOffSetXCalculation
+            currentNumber.value = sliderPosition.value.toInt()
+        },
+        onValueChangeFinished = {
+            println("okej onValueChangeFinished!")
+        },
+        interactionSource = interactionSource
+    )
+
+    val thumbColor = if (sliderDragged || sliderPressed) {
+        Color.LightGray
+    } else {
+        Color.Yellow
+    }
+
+    val thumbText = if (sliderDragged || sliderPressed) {
+        ""
+    } else {
+        currentNumber.value.toString()
+    }
 
     Box(
         modifier = Modifier
             .offset {
                 IntOffset(
-                    x = offSetX.value.roundToInt(),
+                    x = thumbOffSetX.value.roundToInt(),
                     y = 0
                 )
             }
-            .pointerInput(Unit) {
-                detectDragGestures { change, dragAmount ->
-                    offSetX.value += dragAmount.x
-                }
-            }
+            .padding(start = 25.dp, end = 25.dp)
             .size(50.dp)
             .clip(CircleShape)
-            .background(color),
+            .background(thumbColor),
         contentAlignment = Alignment.Center
     ) {
+
         Text(
-            text = "1",
-            fontSize = 20.sp,
+            text = thumbText,
+            fontSize = 40.sp,
+            color = Color.White,
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold
+        )
+    }
+
+    Box(
+        modifier = Modifier
+            .offset {
+                IntOffset(
+                    x = thumbOffSetX.value.roundToInt(),
+                    y = -155
+                )
+            }
+            .padding(start = 25.dp, end = 25.dp)
+            .size(50.dp)
+            .clip(CircleShape)
+            .background(Color.Yellow),
+        contentAlignment = Alignment.Center
+    ) {
+
+        Text(
+            text = currentNumber.value.toString(),
+            fontSize = 40.sp,
             color = Color.White,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold
@@ -103,34 +162,13 @@ fun Thumb(color: Color) {
 }
 
 @Composable
-fun Circle(color: Color) {
-    Box(
-        modifier = Modifier
-            .size(50.dp)
-            .clip(CircleShape)
-            .background(color)
+fun CustomText(text: String) {
+    Text(
+        text = text,
+        fontSize = 40.sp,
+        color = Color.White,
+        textAlign = TextAlign.Center,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier.padding(start = 9.dp, end = 9.dp)
     )
-}
-
-@Composable
-fun VerticalLines(numbers: List<String>) {
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .height(10.dp)
-    ) {
-        val drawPadding: Float = with(LocalDensity.current) { 20.dp.toPx() }
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            val yStart = 0f
-            val yEnd = size.height
-            val distance: Float = (size.width.minus(2 * drawPadding)).div(numbers.size.minus(1))
-            numbers.forEachIndexed { index, step ->
-                drawLine(
-                    color = Color.Red,
-                    start = Offset(x = drawPadding + index.times(distance), y = yStart),
-                    end = Offset(x = drawPadding + index.times(distance), y = yEnd),
-                    strokeWidth = 10f
-                )
-            }
-        }
-    }
 }
