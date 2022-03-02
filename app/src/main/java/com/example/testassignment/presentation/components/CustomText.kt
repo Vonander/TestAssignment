@@ -17,6 +17,6 @@ fun CustomText(text: String) {
         fontSize = 21.sp,
         color = colorResource(id = R.color.inactive_number),
         textAlign = TextAlign.Center,
-        modifier = Modifier.padding(start = 14.5.dp, end = 14.5.dp)
+        modifier = Modifier.padding(start = 15.dp, end = 15.dp)
     )
 }
