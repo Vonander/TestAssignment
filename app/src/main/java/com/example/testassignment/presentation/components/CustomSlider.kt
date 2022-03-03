@@ -33,8 +33,11 @@ import kotlin.math.roundToInt
 
 @Composable
 fun ComposeSlider() {
-    val sliderPosition = remember { mutableStateOf(1f) }
+
+    // The custom thumb offSet x value
     val thumbOffSetX = remember { mutableStateOf(0f) }
+
+    val sliderPosition = remember { mutableStateOf(1f) }
     val currentNumber = remember { mutableStateOf(1) }
     val showPopupThumb = remember { mutableStateOf(false) }
 
@@ -42,7 +45,8 @@ fun ComposeSlider() {
     val sliderDragged by interactionSource.collectIsDraggedAsState()
     val sliderPressed by interactionSource.collectIsPressedAsState()
 
-    // sliderOffsetX 43.dp seems to look good on different screen sizes
+    // Calculation for custom thumb x value
+    // 43.dp seems to look good on different screen sizes. 43.dp is cast to Float to work with thumb offset x value.
     val sliderOffsetX = (43.dp * Resources.getSystem().displayMetrics.density).value
     val thumbOffSetXCalculation = ((sliderPosition.value-1) * sliderOffsetX)
 
@@ -65,6 +69,7 @@ fun ComposeSlider() {
 
     Box(modifier = Modifier.width(350.dp)) {
 
+        // Slider background with numbers 1 to 8
         Box(
             modifier = Modifier
                 .background(
@@ -83,6 +88,7 @@ fun ComposeSlider() {
             }
         }
 
+        // The official Compose Slider
         Slider(
             value = sliderPosition.value,
             valueRange = 1f..8f,
@@ -92,6 +98,8 @@ fun ComposeSlider() {
             ,
             onValueChange = {
                 sliderPosition.value = it
+
+                // Slider x value is set to the custom slider thumb x value
                 thumbOffSetX.value = thumbOffSetXCalculation
                 currentNumber.value = sliderPosition.value.toInt()
             },
@@ -105,6 +113,7 @@ fun ComposeSlider() {
             )
         )
 
+        // Custom slider thumb
         Box(
             modifier = Modifier
                 .offset {
@@ -129,6 +138,7 @@ fun ComposeSlider() {
             )
         }
 
+        // The popup thumb that is visible then clicking on the slider
         Box(
             modifier = Modifier
                 .offset {
