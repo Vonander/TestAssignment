@@ -17,6 +17,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        /*
+        *
+        * Made by Johan Fornander
+        * 220302
+        *
+        * */
+
         setContent {
             TestAssignmentTheme {
 
@@ -30,6 +37,7 @@ class MainActivity : ComponentActivity() {
                     .background(gradientBrush),
                     contentAlignment = Alignment.Center
                 ) {
+
                     ComposeSlider()
                 }
             }
