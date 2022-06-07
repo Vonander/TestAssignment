@@ -24,7 +24,6 @@ class MainActivity : ComponentActivity() {
         *
         * */
 
-        //testing testing
 
         setContent {
             TestAssignmentTheme {
