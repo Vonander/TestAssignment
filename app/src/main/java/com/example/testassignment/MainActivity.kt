@@ -18,13 +18,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         /*
-        *
         * Made by Johan Fornander
         * 220302
         *
         * */
-
-        //testing yet again
 
         setContent {
             TestAssignmentTheme {
