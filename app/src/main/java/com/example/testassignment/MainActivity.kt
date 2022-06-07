@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
         *
         * */
 
-        //testing yet again
+        //Det blev fel, typ part 2
 
         setContent {
             TestAssignmentTheme {
