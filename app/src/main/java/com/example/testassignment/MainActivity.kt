@@ -24,7 +24,7 @@ class MainActivity : ComponentActivity() {
         *
         * */
 
-        //testing yet again
+        //ok jag tog bort den kommentaren!
 
         setContent {
             TestAssignmentTheme {
