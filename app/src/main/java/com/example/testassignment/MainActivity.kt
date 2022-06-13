@@ -21,6 +21,7 @@ class MainActivity : ComponentActivity() {
         * Made by Johan Fornander
         * 220302
         *
+        * jaså develop ey?
         * */
 
         setContent {
